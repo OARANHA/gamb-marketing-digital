@@ -1,0 +1,31 @@
+[build]
+command = "npm run build"
+
+[deploy]
+startCommand = "npm start"
+
+[env]
+NODE_ENV = "production"
+PORT = "3000"
+ZAI_BASE_URL = "https://api.z.ai/v1"
+
+[env.NEXTAUTH_URL]
+value = "https://gamb-production.railway.app"
+
+[env.ZAI_API_KEY]
+sync = false
+
+[env.NEXT_PUBLIC_SUPABASE_URL]
+sync = false
+
+[env.NEXT_PUBLIC_SUPABASE_ANON_KEY]
+sync = false
+
+[env.SUPABASE_SERVICE_ROLE_KEY]
+sync = false
+
+[env.NEXTAUTH_SECRET]
+generate = true
+
+[env.DATABASE_URL]
+sync = false

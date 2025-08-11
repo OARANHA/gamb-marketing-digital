@@ -450,15 +450,404 @@ npm run format       # Formatar código
 
 ## 🚀 Deploy
 
-### Vercel (Recomendado)
-1. Conectar repositório GitHub à Vercel
-2. Configurar variáveis de ambiente
-3. Deploy automático em cada push
+### 🟦 Vercel (Recomendado)
 
-### Outras Plataformas
-- **Netlify** - Configurar build command e output directory
-- **Railway** - Configurar serviço Node.js
-- **Digital Ocean** - Deploy com App Platform
+Vercel é a plataforma ideal para deploy de aplicações Next.js devido à sua otimização nativa e integração perfeita.
+
+#### Passo 1: Preparar o Projeto
+```bash
+# Verificar se o projeto está pronto para produção
+npm run build
+npm run lint
+```
+
+#### Passo 2: Criar Conta Vercel
+1. Acesse [Vercel](https://vercel.com)
+2. Crie uma conta usando GitHub, GitLab ou Bitbucket
+3. Verifique seu e-mail
+
+#### Passo 3: Importar Projeto
+1. Clique em "New Project"
+2. Selecione o repositório `gamb-marketing-digital`
+3. Clique em "Import"
+
+#### Passo 4: Configurar Build Settings
+Vercel detecta automaticamente as configurações para Next.js:
+```yaml
+Framework: Next.js
+Build Command: npm run build
+Output Directory: .next
+Install Command: npm install
+```
+
+#### Passo 5: Configurar Variáveis de Ambiente
+No painel do Vercel, vá para "Settings" → "Environment Variables" e adicione:
+
+```env
+# Z.ai Configuration
+ZAI_API_KEY=sua_chave_api_zai
+ZAI_BASE_URL=https://api.z.ai/v1
+
+# Database Configuration (SQLite para desenvolvimento)
+DATABASE_URL="file:./dev.db"
+
+# Para produção com Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# NextAuth Configuration
+NEXTAUTH_SECRET=sua_chave_secreta_gerada_aleatoriamente
+NEXTAUTH_URL=https://seu-dominio.vercel.app
+
+# Outras variáveis
+NODE_ENV=production
+```
+
+#### Passo 6: Configurar Domínio Personalizado
+1. Vá para "Settings" → "Domains"
+2. Adicione seu domínio (ex: gamb.com.br)
+3. Configure o DNS conforme instruções do Vercel:
+   ```
+   Tipo A: 76.76.21.21
+   CNAME: cname.vercel-dns.com
+   ```
+
+#### Passo 7: Deploy
+1. Clique em "Deploy"
+2. Aguarde o build completar
+3. Teste a aplicação na URL fornecida
+
+#### Recursos Vercel Utilizados:
+- **Edge Functions** - Para API routes otimizadas
+- **ISR (Incremental Static Regeneration)** - Para páginas estáticas
+- **Analytics** - Monitoramento de performance
+- **Web Vitals** - Métricas de performance
+
+#### Configuração Avançada (vercel.json):
+```json
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NEXTAUTH_URL": "https://seu-dominio.com"
+  }
+}
+```
+
+### 🟩 Render
+
+Render é uma excelente alternativa para deploy com suporte a bancos de dados e serviços completos.
+
+#### Passo 1: Preparar o Projeto
+```bash
+# Garantir que o projeto está otimizado para produção
+npm run build
+npm run lint
+```
+
+#### Passo 2: Criar Conta Render
+1. Acesse [Render](https://render.com)
+2. Crie uma conta usando GitHub, GitLab ou Bitbucket
+3. Verifique seu e-mail
+
+#### Passo 3: Escolher o Tipo de Serviço
+Para o Gamb, temos duas opções:
+
+**Opção A: Web Service (Recomendado)**
+- Ideal para aplicações Next.js
+- Escalabilidade automática
+- Suporte a WebSockets
+
+**Opção B: Static Site**
+- Para sites estáticos (sem backend)
+- Mais econômico
+- CDN global
+
+#### Passo 4: Configurar Web Service
+1. Clique em "New +" → "Web Service"
+2. Selecione o repositório `gamb-marketing-digital`
+3. Configure as seguintes opções:
+
+```yaml
+Name: gamb-marketing-digital
+Region: Oregon (ou mais próxima do seu público)
+Branch: master
+Runtime: Node
+Build Command: npm run build
+Start Command: npm start
+Instance Type: Starter (pode upgradear depois)
+```
+
+#### Passo 5: Configurar Variáveis de Ambiente
+Na seção "Environment", adicione:
+
+```env
+# Z.ai Configuration
+ZAI_API_KEY=sua_chave_api_zai
+ZAI_BASE_URL=https://api.z.ai/v1
+
+# Database Configuration
+DATABASE_URL="file:./dev.db"
+
+# Supabase (para produção)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# NextAuth Configuration
+NEXTAUTH_SECRET=sua_chave_secreta_gerada_aleatoriamente
+NEXTAUTH_URL=https://gamb-marketing-digital.onrender.com
+
+# Outras variáveis
+NODE_ENV=production
+PORT=10000
+```
+
+#### Passo 6: Configurar Health Check
+Render requer um endpoint de saúde. Adicione ao seu projeto:
+
+```typescript
+// src/app/api/health/route.ts (já existe)
+export async function GET() {
+  return Response.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+}
+```
+
+No painel do Render, configure:
+```yaml
+Health Check Path: /api/health
+Check Interval: 30s
+Initial Delay: 60s
+```
+
+#### Passo 7: Configurar Domínio Personalizado
+1. Vá para "Settings" → "Custom Domains"
+2. Adicione seu domínio (ex: gamb.com.br)
+3. Configure o DNS:
+   ```
+   Tipo A: 216.24.57.1
+   Tipo A: 216.24.57.4
+   ```
+
+#### Passo 8: Deploy
+1. Clique em "Create Web Service"
+2. Aguarde o build e deploy
+3. Acesse a URL fornecida pelo Render
+
+#### Configuração Avançada (render.yaml):
+```yaml
+services:
+  - type: web
+    name: gamb-marketing-digital
+    env: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/health
+    autoDeploy: true
+    instanceType: starter
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetMemoryPercent: 70
+      targetCPUPercent: 70
+
+databases:
+  - name: gamb-db
+    databaseName: gamb
+    user: gamb_user
+    plan: free
+```
+
+### 🟨 Netlify
+
+Netlify é ótimo para sites estáticos com funcionalidades serverless.
+
+#### Passo 1: Preparar o Projeto
+```bash
+# Build para produção estática
+npm run build
+npm run export  # Se necessário para exportação estática
+```
+
+#### Passo 2: Configurar Build Settings
+```yaml
+Build command: npm run build
+Publish directory: .next
+Functions directory: netlify/functions
+```
+
+#### Passo 3: Configurar Variáveis de Ambiente
+```env
+ZAI_API_KEY=sua_chave_api_zai
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+#### Passo 4: Configurar Netlify Functions
+Criar `netlify/functions/chat.js`:
+```javascript
+const handler = async (event) => {
+  // Lógica do chat com Z.ai
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ response: 'OK' })
+  }
+}
+
+module.exports = { handler }
+```
+
+### 🟦 Digital Ocean App Platform
+
+Digital Ocean oferece uma plataforma completa com banco de dados integrado.
+
+#### Passo 1: Criar App
+1. Acesse [Digital Ocean](https://cloud.digitalocean.com)
+2. Vá para "Apps" → "Create App"
+3. Conecte seu repositório GitHub
+
+#### Passo 2: Configurar Build
+```yaml
+Build Command: npm run build
+Run Command: npm start
+HTTP Port: 3000
+```
+
+#### Passo 3: Configurar Variáveis de Ambiente
+```env
+ZAI_API_KEY=sua_chave_api_zai
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXTAUTH_SECRET=sua_chave_secreta
+NEXTAUTH_URL=https://gamb.ondigitalocean.app
+```
+
+#### Passo 4: Configurar Banco de Dados
+1. Crie um banco de dados PostgreSQL no Digital Ocean
+2. Adicione as credenciais às variáveis de ambiente
+3. Configure o Prisma para usar PostgreSQL
+
+### 🟩 Railway
+
+Railway é excelente para desenvolvimento rápido e deploy simplificado.
+
+#### Passo 1: Criar Projeto
+1. Acesse [Railway](https://railway.app)
+2. Clique em "New Project"
+3. Selecione "Deploy from GitHub repo"
+
+#### Passo 2: Configurar Variáveis de Ambiente
+```env
+NODE_ENV=production
+PORT=3000
+ZAI_API_KEY=sua_chave_api_zai
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXTAUTH_SECRET=sua_chave_secreta
+NEXTAUTH_URL=https://gamb-production.railway.app
+```
+
+#### Passo 3: Configurar Railway
+Criar `railway.toml`:
+```toml
+[build]
+command = "npm run build"
+
+[deploy]
+startCommand = "npm start"
+
+[env]
+NODE_ENV = "production"
+PORT = "3000"
+```
+
+## 🔄 Migração entre Plataformas
+
+### De Vercel para Render
+1. Exporte variáveis de ambiente do Vercel
+2. Configure o serviço no Render
+3. Atualize DNS para apontar para Render
+4. Teste todas as funcionalidades
+
+### De Render para Vercel
+1. Faça backup do banco de dados
+2. Configure o projeto no Vercel
+3. Importe variáveis de ambiente
+4. Atualize domínios e DNS
+
+## 📊 Comparação de Plataformas
+
+| Plataforma | Prós | Contras | Preço (Início) |
+|------------|------|---------|----------------|
+| **Vercel** | ⚡ Performance máxima<br>🔥 Integração Next.js<br>🌍 CDN global | 💰 Mais caro<br>📊 Limites de uso | Gratuito (hobby) |
+| **Render** | 🐘 Banco de dados incluso<br>🔄 WebSockets nativo<br>💰 Preço justo | ⚡ Performance menor que Vercel<br>🌍 CDN limitado | Gratuito (starter) |
+| **Netlify** | 🚀 Build rápido<br>🌍 CDN excelente<br>🔧 Functions serverless | 🚫 Limitado para apps complexos<br>💳 Banco de dados separado | Gratuito (personal) |
+| **Digital Ocean** | 🐘 Tudo em um lugar<br>🔧 Controle total<br>💰 Bom preço | ⚙️ Configuração complexa<br>📚 Curva de aprendizado | $5/mês (mínimo) |
+| **Railway** | 🚀 Setup rápido<br>💰 Preço justo<br>🔧 Interface simples | 📊 Recursos limitados<br>⚡ Performance média | Gratuito (starter) |
+
+## 🎯 Recomendações
+
+### Para Produção:
+- **Vercel**: Melhor performance e experiência do usuário
+- **Render**: Melhor custo-benefício com banco de dados
+
+### Para Desenvolvimento/Teste:
+- **Railway**: Rápido e econômico para testes
+- **Render**: Bom para staging com banco de dados
+
+### Para Sites Estáticos:
+- **Netlify**: Melhor para sites sem backend complexo
+
+## 🔧 Monitoramento Pós-Deploy
+
+### Vercel Analytics
+```bash
+# Instalar CLI
+npm i -g vercel
+
+# Verificar métricas
+vercel analytics
+```
+
+### Render Monitoring
+- Acessar dashboard do Render
+- Monitorar uso de CPU e memória
+- Verificar logs em tempo real
+
+### Health Checks
+Implementar monitoramento contínuo:
+```typescript
+// Adicionar ao projeto
+const healthCheck = setInterval(async () => {
+  try {
+    const response = await fetch('/api/health');
+    if (!response.ok) throw new Error('Health check failed');
+  } catch (error) {
+    console.error('Health check failed:', error);
+    // Notificar equipe de DevOps
+  }
+}, 300000); // 5 minutos
+```
 
 ## 🔐 Segurança
 
