@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +10,213 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Clientes da agência
+model Client {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String
+  name            String
+  companyName     String?
+  phone           String?
+  document        String?  // CPF ou CNPJ
+  industry        String?
+  companySize     String?  // micro, small, medium, large
+  status          ClientStatus @default(ACTIVE)
+  avatar          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relacionamentos
+  tickets         Ticket[]
+  projects        Project[]
+  briefings       Briefing[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@map("clients")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Tickets de suporte
+model Ticket {
+  id              String      @id @default(cuid())
+  ticketNumber    String      @unique
+  clientId        String
+  subject         String
+  description     String
+  category        TicketCategory
+  priority        TicketPriority @default(MEDIUM)
+  status          TicketStatus @default(OPEN)
+  assignedTo      String?     // ID do usuário responsável
+  chatHistory     Json?       // Histórico do chat associado
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  resolvedAt      DateTime?
+  
+  // Relacionamentos
+  client          Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  @@map("tickets")
+}
+
+// Projetos dos clientes
+model Project {
+  id              String      @id @default(cuid())
+  clientId        String
+  name            String
+  description     String?
+  category        ProjectCategory
+  status          ProjectStatus @default(PLANNING)
+  budget          Float?
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Relacionamentos
+  client          Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  @@map("projects")
+}
+
+// Briefings inteligentes
+model Briefing {
+  id              String      @id @default(cuid())
+  clientId        String
+  title           String
+  content         String        // Conteúdo gerado pela IA
+  rawData         Json?         // Dados brutos do formulário
+  category        BriefingCategory
+  status          BriefingStatus @default(DRAFT)
+  aiGenerated     Boolean      @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Relacionamentos
+  client          Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  @@map("briefings")
+}
+
+// Eventos de analytics
+model AnalyticsEvent {
+  id              String        @id @default(cuid())
+  clientId        String?
+  sessionId       String
+  eventType       EventType
+  data            Json?
+  timestamp       DateTime      @default(now())
+  userAgent       String?
+  ipAddress       String?
+  
+  // Relacionamentos
+  client          Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  
+  @@map("analytics_events")
+}
+
+// Usuários internos da equipe
+model TeamMember {
+  id              String      @id @default(cuid())
+  email           String      @unique
+  password        String
+  name            String
+  role            TeamRole    @default(AGENT)
+  avatar          String?
+  bio             String?
+  specialties     Json?        // Array de especialidades em JSON
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  @@map("team_members")
+}
+
+// Enums
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  BLOCKED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  CANCELLED
+}
+
+enum TicketCategory {
+  ORCAMENTO
+  SUPORTE
+  DUVIDA
+  RECLAMACAO
+  SUGESTAO
+  PARCERIA
+  EMERGENCIA
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ProjectCategory {
+  WEBSITE
+  ECOMMERCE
+  SEO
+  TRAFEGO_PAGO
+  REDES_SOCIAIS
+  BRANDING
+  CONSULTORIA
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+}
+
+enum BriefingCategory {
+  WEBSITE
+  ECOMMERCE
+  MARKETING_DIGITAL
+  BRANDING
+  CONSULTORIA
+  OUTRO
+}
+
+enum BriefingStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  REJECTED
+  IN_PROGRESS
+}
+
+enum EventType {
+  PAGE_VIEW
+  CHAT_OPEN
+  CHAT_MESSAGE
+  TICKET_CREATED
+  POPUP_OPEN
+  POPUP_SUBMIT
+  CONTACT_FORM
+  COOKIE_ACCEPT
+  SERVICE_CLICK
+  SCROLL_DEPTH
+  BRIEFING_CREATED
+  LOGIN
+  LOGOUT
+}
+
+enum TeamRole {
+  ADMIN
+  MANAGER
+  AGENT
+  INTERN
 }

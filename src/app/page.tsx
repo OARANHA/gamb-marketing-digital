@@ -7,10 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowRight, Mail, Phone, MapPin, CheckCircle, Star, Users, Target, TrendingUp, MessageCircle, TicketCheck, Calculator } from "lucide-react";
+import { ArrowRight, Mail, Phone, MapPin, CheckCircle, Star, Users, Target, TrendingUp, MessageCircle, TicketCheck, Calculator, Brain, BarChart3, User } from "lucide-react";
 import { TicketForm } from "@/components/TicketForm";
 import { BudgetForm } from "@/components/BudgetForm";
 import { Portfolio } from "@/components/Portfolio";
+import { BriefingForm } from "@/components/BriefingForm";
+import { MarketingTools } from "@/components/MarketingTools";
+import { AuthForms } from "@/components/AuthForms";
+import { ClientDashboard } from "@/components/ClientDashboard";
 import { useAnalytics } from "@/hooks/use-analytics";
 
 export default function Home() {
@@ -19,6 +23,11 @@ export default function Home() {
   const [showChat, setShowChat] = useState(false);
   const [showBudgetForm, setShowBudgetForm] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
+  const [showBriefingForm, setShowBriefingForm] = useState(false);
+  const [showMarketingTools, setShowMarketingTools] = useState(false);
+  const [showAuthForms, setShowAuthForms] = useState(false);
+  const [showClientDashboard, setShowClientDashboard] = useState(false);
+  const [client, setClient] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'agent', knowledgeUsed?: boolean}[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [lastTicketId, setLastTicketId] = useState<string | null>(null);
@@ -28,12 +37,39 @@ export default function Home() {
     analytics.trackContactForm(data);
   };
 
+  const handleBriefingSubmit = (data: any, content: string) => {
+    console.log('Briefing submitted:', data, content);
+    analytics.trackEvent('briefing_created', { title: data.projectName });
+  };
+
+  const handleAuthSuccess = (user: any) => {
+    setClient(user);
+    setShowAuthForms(false);
+    setShowClientDashboard(true);
+  };
+
+  const handleLogout = () => {
+    setClient(null);
+    setShowClientDashboard(false);
+    localStorage.removeItem('gamb_client');
+  };
+
   const handleTicketCreated = (ticketId: string) => {
     setLastTicketId(ticketId);
     analytics.trackTicketCreated(ticketId, 'chat');
   };
 
   useEffect(() => {
+    // Verificar se o usuário já está logado
+    const savedClient = localStorage.getItem('gamb_client');
+    if (savedClient) {
+      try {
+        setClient(JSON.parse(savedClient));
+      } catch (error) {
+        localStorage.removeItem('gamb_client');
+      }
+    }
+
     // Mostrar popup após 5 segundos
     const timer = setTimeout(() => {
       setShowPopup(true);
@@ -257,6 +293,33 @@ export default function Home() {
               <a href="#sobre" className="hover:text-primary transition-colors">Sobre</a>
               <a href="#depoimentos" className="hover:text-primary transition-colors">Depoimentos</a>
               <a href="#contato" className="hover:text-primary transition-colors">Contato</a>
+              <button 
+                onClick={() => setShowBriefingForm(true)}
+                className="hover:text-primary transition-colors"
+              >
+                Briefing
+              </button>
+              <button 
+                onClick={() => setShowMarketingTools(true)}
+                className="hover:text-primary transition-colors"
+              >
+                Ferramentas
+              </button>
+              {client ? (
+                <button 
+                  onClick={() => setShowClientDashboard(true)}
+                  className="hover:text-primary transition-colors font-medium"
+                >
+                  Área do Cliente
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setShowAuthForms(true)}
+                  className="hover:text-primary transition-colors"
+                >
+                  Login
+                </button>
+              )}
             </nav>
             <Button>
               Fale Conosco
@@ -287,6 +350,16 @@ export default function Home() {
                 <Button size="lg" className="text-lg" onClick={() => setShowPortfolio(true)}>
                   Ver Portfólio
                   <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                <Button size="lg" variant="outline" className="text-lg" onClick={() => setShowBriefingForm(true)}>
+                  <Brain className="mr-2 h-5 w-5" />
+                  Briefing Inteligente
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg" onClick={() => setShowMarketingTools(true)}>
+                  <BarChart3 className="mr-2 h-5 w-5" />
+                  Ferramentas de Marketing
                 </Button>
               </div>
             </div>
@@ -591,6 +664,58 @@ export default function Home() {
             <Portfolio />
           </div>
         </div>
+      )}
+
+      {/* Modal de Briefing */}
+      {showBriefingForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold">Briefing Inteligente</h2>
+                <Button 
+                  variant="ghost" 
+                  size="lg"
+                  onClick={() => setShowBriefingForm(false)}
+                >
+                  ×
+                </Button>
+              </div>
+              <BriefingForm onBriefingGenerated={handleBriefingSubmit} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Ferramentas de Marketing */}
+      {showMarketingTools && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full h-full max-h-full overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b z-10 p-4">
+              <div className="container mx-auto flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Ferramentas de Marketing</h2>
+                <Button 
+                  variant="ghost" 
+                  size="lg"
+                  onClick={() => setShowMarketingTools(false)}
+                >
+                  ×
+                </Button>
+              </div>
+            </div>
+            <MarketingTools />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Login/Cadastro */}
+      {showAuthForms && (
+        <AuthForms onAuthSuccess={handleAuthSuccess} />
+      )}
+
+      {/* Dashboard do Cliente */}
+      {showClientDashboard && client && (
+        <ClientDashboard client={client} onLogout={handleLogout} />
       )}
     </div>
   );
