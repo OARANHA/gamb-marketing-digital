@@ -7,14 +7,31 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowRight, Mail, Phone, MapPin, CheckCircle, Star, Users, Target, TrendingUp, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail, Phone, MapPin, CheckCircle, Star, Users, Target, TrendingUp, MessageCircle, TicketCheck, Calculator } from "lucide-react";
+import { TicketForm } from "@/components/TicketForm";
+import { BudgetForm } from "@/components/BudgetForm";
+import { Portfolio } from "@/components/Portfolio";
+import { useAnalytics } from "@/hooks/use-analytics";
 
 export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [showChat, setShowChat] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'agent'}[]>([]);
+  const [showBudgetForm, setShowBudgetForm] = useState(false);
+  const [showPortfolio, setShowPortfolio] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'agent', knowledgeUsed?: boolean}[]>([]);
   const [chatInput, setChatInput] = useState("");
+  const [lastTicketId, setLastTicketId] = useState<string | null>(null);
+
+  const handleBudgetSubmit = (data: any, calculation: any) => {
+    console.log('Budget submitted:', data, calculation);
+    analytics.trackContactForm(data);
+  };
+
+  const handleTicketCreated = (ticketId: string) => {
+    setLastTicketId(ticketId);
+    analytics.trackTicketCreated(ticketId, 'chat');
+  };
 
   useEffect(() => {
     // Mostrar popup após 5 segundos
@@ -28,12 +45,21 @@ export default function Home() {
   const handleCookieAccept = () => {
     setShowCookieBanner(false);
     localStorage.setItem('cookieAccepted', 'true');
+    analytics.trackCookieAccept();
+  };
+
+  const handleChatToggle = (open: boolean) => {
+    setShowChat(open);
+    if (open) {
+      analytics.trackChatOpen();
+    }
   };
 
   const handleSendMessage = async () => {
     if (chatInput.trim()) {
       const userMessage = chatInput;
       setChatMessages([...chatMessages, { text: userMessage, sender: 'user' }]);
+      analytics.trackChatMessage(userMessage);
       setChatInput("");
       
       try {
@@ -42,7 +68,10 @@ export default function Home() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ message: userMessage }),
+          body: JSON.stringify({ 
+            message: userMessage,
+            chatHistory: chatMessages.slice(-5) // Envia últimas 5 mensagens para contexto
+          }),
         });
 
         const data = await response.json();
@@ -50,7 +79,8 @@ export default function Home() {
         if (response.ok) {
           setChatMessages(prev => [...prev, { 
             text: data.response, 
-            sender: 'agent' 
+            sender: 'agent',
+            knowledgeUsed: data.knowledgeUsed
           }]);
         } else {
           setChatMessages(prev => [...prev, { 
@@ -132,22 +162,34 @@ export default function Home() {
           <div className="bg-white rounded-lg shadow-lg w-80 h-96 flex flex-col">
             <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex justify-between items-center">
               <h3 className="font-semibold">Chat com Agente</h3>
-              <Button variant="ghost" size="sm" onClick={() => setShowChat(false)}>
+              <Button variant="ghost" size="sm" onClick={() => handleChatToggle(false)}>
                 ×
               </Button>
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
+              {lastTicketId && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <div className="flex items-center gap-2 text-green-800">
+                    <TicketCheck className="h-4 w-4" />
+                    <span className="text-sm font-medium">Ticket {lastTicketId} criado!</span>
+                  </div>
+                  <p className="text-xs text-green-700 mt-1">Aguardamos seu contato.</p>
+                </div>
+              )}
               {chatMessages.map((msg, index) => (
                 <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                  <div className={`inline-block p-2 rounded-lg ${
+                  <div className={`inline-block p-2 rounded-lg max-w-xs ${
                     msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
                   }`}>
                     {msg.text}
+                    {msg.sender === 'agent' && msg.knowledgeUsed && (
+                      <div className="text-xs opacity-70 mt-1">✓ Baseado em conhecimento da Gamb</div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t space-y-2">
               <div className="flex gap-2">
                 <Input
                   value={chatInput}
@@ -159,11 +201,16 @@ export default function Home() {
                   <MessageCircle className="h-4 w-4" />
                 </Button>
               </div>
+              <TicketForm 
+                chatHistory={chatMessages}
+                onTicketCreated={handleTicketCreated}
+                onClose={() => setShowChat(false)}
+              />
             </div>
           </div>
         ) : (
           <Button
-            onClick={() => setShowChat(true)}
+            onClick={() => handleChatToggle(true)}
             className="bg-primary hover:bg-primary/90 rounded-full p-4 shadow-lg"
           >
             <MessageCircle className="h-6 w-6" />
@@ -233,12 +280,13 @@ export default function Home() {
                 A Gamb é especializada em criar soluções de marketing digital que impulsionam o crescimento do seu negócio. Da estratégia à execução, estamos com você em cada passo.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="text-lg">
-                  Comece Agora
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                <Button size="lg" className="text-lg" onClick={() => setShowBudgetForm(true)}>
+                  <Calculator className="mr-2 h-5 w-5" />
+                  Simular Orçamento
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg">
+                <Button size="lg" className="text-lg" onClick={() => setShowPortfolio(true)}>
                   Ver Portfólio
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>
@@ -281,7 +329,11 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <Card 
+                key={index} 
+                className="text-center hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => analytics.trackServiceClick(service.title)}
+              >
                 <CardHeader>
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <service.icon className="h-6 w-6 text-primary" />
@@ -498,6 +550,48 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Modal de Orçamento */}
+      {showBudgetForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold">Orçamento Inteligente</h2>
+                <Button 
+                  variant="ghost" 
+                  size="lg"
+                  onClick={() => setShowBudgetForm(false)}
+                >
+                  ×
+                </Button>
+              </div>
+              <BudgetForm onSubmit={handleBudgetSubmit} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Portfólio */}
+      {showPortfolio && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full h-full max-h-full overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b z-10 p-4">
+              <div className="container mx-auto flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Portfólio de Cases</h2>
+                <Button 
+                  variant="ghost" 
+                  size="lg"
+                  onClick={() => setShowPortfolio(false)}
+                >
+                  ×
+                </Button>
+              </div>
+            </div>
+            <Portfolio />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
