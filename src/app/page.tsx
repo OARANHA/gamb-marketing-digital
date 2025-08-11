@@ -62,9 +62,17 @@ export default function Home() {
   };
 
   const handleAdminAuthSuccess = (adminUser: any) => {
+    console.log('🎉 Page: Admin auth success received!');
+    console.log('👤 Admin user:', adminUser);
+    
     setAdmin(adminUser);
     setShowAdminAuth(false);
     setShowAdminDashboard(true);
+    
+    console.log('✅ Page: Admin state updated');
+    console.log('   showAdminAuth:', false);
+    console.log('   showAdminDashboard:', true);
+    console.log('   admin state:', adminUser);
   };
 
   const handleAdminLogout = () => {
@@ -650,7 +658,10 @@ export default function Home() {
           <div className="border-t border-primary-foreground/20 pt-8 text-center text-primary-foreground/60">
             <p>&copy; 2024 Gamb Marketing Digital. Todos os direitos reservados.</p>
             <button 
-              onClick={() => setShowAdminAuth(true)}
+              onClick={() => {
+                console.log('🖱️ Painel Administrativo button clicked');
+                setShowAdminAuth(true);
+              }}
               className="text-primary-foreground/60 hover:text-primary-foreground/80 text-sm mt-2"
             >
               Painel Administrativo

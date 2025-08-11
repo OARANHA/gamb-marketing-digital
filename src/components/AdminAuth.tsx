@@ -53,12 +53,20 @@ export function AdminAuth({ onAuthSuccess, onClose }: AdminAuthProps) {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateLogin()) return;
+    console.log('🔐 AdminAuth: Iniciando login');
+    console.log('📧 Email:', loginData.email);
+    console.log('🔑 Password:', loginData.password ? '[PROVIDED]' : '[MISSING]');
+    
+    if (!validateLogin()) {
+      console.log('❌ AdminAuth: Validação falhou');
+      return;
+    }
 
     setIsLoading(true);
     setAuthMessage(null);
 
     try {
+      console.log('🌐 AdminAuth: Enviando requisição para API...');
       const response = await fetch('/api/auth/admin/login', {
         method: 'POST',
         headers: {
@@ -70,26 +78,44 @@ export function AdminAuth({ onAuthSuccess, onClose }: AdminAuthProps) {
         }),
       });
 
+      console.log('📡 AdminAuth: Resposta recebida');
+      console.log('   Status:', response.status);
+      console.log('   OK:', response.ok);
+
       const data = await response.json();
+      console.log('📦 AdminAuth: Dados recebidos:', data);
 
       if (response.ok) {
+        console.log('✅ AdminAuth: Login successful!');
+        
         setAuthMessage({
           type: 'success',
           message: 'Login administrativo realizado com sucesso!'
         });
         
         // Salvar dados do administrador no localStorage
+        console.log('💾 AdminAuth: Salvando no localStorage...');
         localStorage.setItem('gamb_admin', JSON.stringify(data.admin));
         
-        // Notificar componente pai
-        onAuthSuccess(data.admin);
+        // Verificar se foi salvo corretamente
+        const saved = localStorage.getItem('gamb_admin');
+        console.log('✅ AdminAuth: Salvo no localStorage:', saved ? 'YES' : 'NO');
+        
+        // Pequeno delay para garantir que o localStorage foi salvo
+        setTimeout(() => {
+          console.log('📤 AdminAuth: Notificando componente pai...');
+          // Notificar componente pai
+          onAuthSuccess(data.admin);
+        }, 100);
       } else {
+        console.log('❌ AdminAuth: Login failed:', data.error);
         setAuthMessage({
           type: 'error',
           message: data.error || 'Erro ao fazer login administrativo'
         });
       }
     } catch (error) {
+      console.log('💥 AdminAuth: Error:', error);
       setAuthMessage({
         type: 'error',
         message: 'Erro de conexão. Tente novamente.'
