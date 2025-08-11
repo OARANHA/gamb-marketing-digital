@@ -8,10 +8,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, CheckCircle, User, Lock, Building, Phone, Mail } from "lucide-react";
+import { AlertCircle, CheckCircle, User, Lock, Building, Phone, Mail, X } from "lucide-react";
 
 interface AuthFormsProps {
   onAuthSuccess: (user: any) => void;
+  onClose?: () => void;
 }
 
 interface RegisterData {
@@ -50,7 +51,7 @@ const companySizes = [
   { value: "large", label: "Grande (250+ funcionários)" }
 ];
 
-export function AuthForms({ onAuthSuccess }: AuthFormsProps) {
+export function AuthForms({ onAuthSuccess, onClose }: AuthFormsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [authMessage, setAuthMessage] = useState<{
     type: 'success' | 'error';
@@ -228,6 +229,20 @@ export function AuthForms({ onAuthSuccess }: AuthFormsProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Botão de fechar */}
+        {onClose && (
+          <div className="flex justify-end mb-4">
+            <Button 
+              variant="ghost" 
+              size="lg"
+              onClick={onClose}
+              className="h-10 w-10 p-0"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+          </div>
+        )}
+
         {/* Logo e Título */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">

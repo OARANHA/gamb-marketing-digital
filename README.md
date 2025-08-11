@@ -1,141 +1,501 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🚀 Gamb - Plataforma de Marketing Digital
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Uma plataforma completa de marketing digital desenvolvida com tecnologias modernas, oferecendo serviços de SEO, tráfego pago, gestão de redes sociais e web design para empresas de todos os portes.
 
-## ✨ Technology Stack
+## ✨ Visão Geral
 
-This scaffold provides a robust foundation built with:
+O Gamb é uma agência de marketing digital sediada em Alvorada - RS, especializada em transformar negócios através de estratégias digitais inovadoras. Esta plataforma web oferece:
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+- 🎯 **Briefing Inteligente** - Sistema automatizado de criação de briefings com IA
+- 🛠️ **Ferramentas de Marketing** - Suite completa para análise e otimização
+- 👥 **Área do Cliente** - Dashboard exclusivo para acompanhamento de projetos
+- 💬 **Chat com RGA** - Chat inteligente com Retrieval-Augmented Generation
+- 📊 **Analytics Completo** - Tracking de conversões e métricas em tempo real
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+## 🚀 Tecnologias Utilizadas
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### Frontend
+- **⚡ Next.js 15** - Framework React com App Router
+- **📘 TypeScript 5** - Tipagem segura e desenvolvimento robusto
+- **🎨 Tailwind CSS 4** - Framework CSS utility-first
+- **🧩 shadcn/ui** - Componentes UI acessíveis e modernos
+- **🎯 Lucide React** - Biblioteca de ícones consistente
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### Backend & IA
+- **🤖 Z.ai SDK** - Integração com modelo GLM-4.5-Flash para IA
+- **🗄️ Prisma ORM** - Mapeamento objeto-relacional com SQLite
+- **🔐 bcryptjs** - Hashing de senhas seguro
+- **📊 Socket.io** - Comunicação em tempo real
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### Infraestrutura
+- **🗄️ Banco de Dados** - SQLite (desenvolvimento) / Supabase (produção)
+- **🌐 API Routes** - Endpoints RESTful no Next.js
+- **📱 Responsivo** - Design mobile-first
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+## 🎯 Funcionalidades Principais
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### 1. 🏠 Página Principal
+- Hero section com call-to-action
+- Showcase de serviços (SEO, Tráfego Pago, Redes Sociais, Web Design)
+- Depoimentos de clientes
+- Formulário de contato
+- Popup promocional
+- Aviso de cookies
 
-## 🎯 Why This Scaffold?
+### 2. 🤖 Chat Inteligente com RGA
+- Chat em tempo real disponível em todas as páginas
+- Integração com base de conhecimento da Gamb
+- Sistema de tickets integrado
+- Respostas contextualizadas com histórico
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### 3. 📝 Briefing Inteligente
+- Formulário guiado para criação de briefings
+- Processamento com IA da Z.ai
+- Geração automática de conteúdo estruturado
+- Categorização inteligente por tipo de projeto
 
-## 🚀 Quick Start
+### 4. 🛠️ Ferramentas de Marketing
+- **Analisador SEO** - Análise de palavras-chave e sugestões
+- **Gerador de Anúncios** - Criação de copy para Google Ads e Facebook
+- **Gerador de Posts** - Conteúdo para redes sociais
+- **Calculadora de ROI** - Projeção de retorno sobre investimento
 
-```bash
-# Install dependencies
-npm install
+### 5. 👥 Área do Cliente
+- Sistema de autenticação completo
+- Dashboard com métricas principais
+- Gerenciamento de tickets
+- Acompanhamento de projetos
+- Histórico de briefings
+- Relatórios e analytics
 
-# Start development server
-npm run dev
+### 6. 📊 Sistema de Analytics
+- Tracking de eventos personalizados
+- Análise de conversões
+- Métricas de engajamento
+- Relatórios de desempenho
 
-# Build for production
-npm run build
+## 🗄️ Estrutura do Banco de Dados
 
-# Start production server
-npm start
+### Modelos Principais
+```sql
+-- Clientes
+Client {
+  id: String (primary key)
+  email: String (unique)
+  name: String
+  phone: String?
+  companyName: String?
+  industry: String?
+  companySize: String?
+  status: String
+  createdAt: DateTime
+}
+
+-- Tickets de Suporte
+Ticket {
+  id: String (primary key)
+  ticketNumber: String (unique)
+  clientId: String (foreign key)
+  subject: String
+  category: String
+  priority: String
+  status: String
+  messages: Json
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+-- Projetos
+Project {
+  id: String (primary key)
+  clientId: String (foreign key)
+  name: String
+  category: String
+  status: String
+  budget: Float?
+  startDate: DateTime?
+  endDate: DateTime?
+  description: String?
+  createdAt: DateTime
+}
+
+-- Briefings
+Briefing {
+  id: String (primary key)
+  clientId: String (foreign key)
+  title: String
+  category: String
+  content: String
+  status: String
+  createdAt: DateTime
+}
+
+-- Eventos de Analytics
+AnalyticsEvent {
+  id: String (primary key)
+  clientId: String?
+  eventType: String
+  eventData: Json?
+  timestamp: DateTime
+}
+
+-- Membros da Equipe
+TeamMember {
+  id: String (primary key)
+  name: String
+  email: String (unique)
+  role: String
+  department: String
+  bio: String?
+  avatar: String?
+  isActive: Boolean
+  createdAt: DateTime
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+## 🚀 Instalação e Configuração
 
-## 🤖 Powered by Z.ai
+### Pré-requisitos
+- Node.js 18+ 
+- npm ou yarn
+- Conta na Z.ai (para funcionalidades de IA)
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+### Passo 1: Clonar o Projeto
+```bash
+git clone https://github.com/OARANHA/gamb-marketing-digital.git
+cd gamb-marketing-digital
+```
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+### Passo 2: Instalar Dependências
+```bash
+npm install
+```
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+### Passo 3: Configurar Variáveis de Ambiente
+Criar arquivo `.env.local` na raiz do projeto:
+```env
+# Z.ai Configuration
+ZAI_API_KEY=sua_chave_api_zai
+ZAI_BASE_URL=https://api.z.ai/v1
 
-## 📁 Project Structure
+# Database Configuration
+DATABASE_URL="file:./dev.db"
+
+# NextAuth Configuration
+NEXTAUTH_SECRET=sua_chave_secreta
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### Passo 4: Configurar Banco de Dados
+```bash
+# Gerar Prisma Client
+npx prisma generate
+
+# Push do schema para o banco
+npm run db:push
+
+# (Opcional) Visualizar banco de dados
+npx prisma studio
+```
+
+### Passo 5: Iniciar Servidor de Desenvolvimento
+```bash
+npm run dev
+```
+
+Acesse [http://localhost:3000](http://localhost:3000) para visualizar a aplicação.
+
+## 🌐 Migração para Supabase
+
+### Passo 1: Criar Projeto Supabase
+1. Acesse [Supabase](https://supabase.com)
+2. Crie um novo projeto
+3. Copie as credenciais do projeto
+
+### Passo 2: Configurar Variáveis de Ambiente
+Atualize `.env.local`:
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+### Passo 3: Migrar Schema do Banco
+1. Acesse o painel do Supabase
+2. Vá para "SQL Editor"
+3. Execute o schema do Prisma adaptado para PostgreSQL:
+
+```sql
+-- Tabela de Clientes
+CREATE TABLE clients (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  phone VARCHAR(20),
+  company_name VARCHAR(255),
+  industry VARCHAR(100),
+  company_size VARCHAR(50),
+  status VARCHAR(50) DEFAULT 'ACTIVE',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de Tickets
+CREATE TABLE tickets (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  ticket_number VARCHAR(50) UNIQUE NOT NULL,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  subject VARCHAR(500) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  priority VARCHAR(20) DEFAULT 'MEDIUM',
+  status VARCHAR(50) DEFAULT 'OPEN',
+  messages JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de Projetos
+CREATE TABLE projects (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  status VARCHAR(50) DEFAULT 'PLANNING',
+  budget DECIMAL(10,2),
+  start_date DATE,
+  end_date DATE,
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de Briefings
+CREATE TABLE briefings (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  content TEXT NOT NULL,
+  status VARCHAR(50) DEFAULT 'DRAFT',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de Analytics
+CREATE TABLE analytics_events (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
+  event_type VARCHAR(100) NOT NULL,
+  event_data JSONB,
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de Membros da Equipe
+CREATE TABLE team_members (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  role VARCHAR(100) NOT NULL,
+  department VARCHAR(100),
+  bio TEXT,
+  avatar VARCHAR(500),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Criar índices para performance
+CREATE INDEX idx_tickets_client_id ON tickets(client_id);
+CREATE INDEX idx_tickets_status ON tickets(status);
+CREATE INDEX idx_projects_client_id ON projects(client_id);
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_briefings_client_id ON briefings(client_id);
+CREATE INDEX idx_analytics_client_id ON analytics_events(client_id);
+CREATE INDEX idx_analytics_event_type ON analytics_events(event_type);
+CREATE INDEX idx_analytics_timestamp ON analytics_events(timestamp);
+```
+
+### Passo 4: Atualizar Prisma Schema
+Modificar `prisma/schema.prisma`:
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelos adaptados para PostgreSQL com UUID
+model Client {
+  id          String   @id @default(uuid()) @db.Uuid
+  email       String   @unique
+  name        String
+  phone       String?
+  companyName String?
+  industry    String?
+  companySize String?
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  tickets     Ticket[]
+  projects    Project[]
+  briefings   Briefing[]
+  analytics   AnalyticsEvent[]
+
+  @@map("clients")
+}
+
+// ... outros modelos adaptados similarmente
+```
+
+### Passo 5: Instalar Cliente Supabase
+```bash
+npm install @supabase/supabase-js
+```
+
+### Passo 6: Criar Cliente Supabase
+Criar `src/lib/supabase.ts`:
+```typescript
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient(supabaseUrl, supabaseKey)
+```
+
+### Passo 7: Migrar Dados (Opcional)
+Se tiver dados existentes no SQLite, crie um script de migração.
+
+## 📁 Estrutura do Projeto
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                          # Next.js App Router
+│   ├── api/                     # API Routes
+│   │   ├── auth/               # Autenticação
+│   │   ├── briefing/           # Briefing inteligente
+│   │   ├── chat/               # Chat com IA
+│   │   ├── tickets/            # Sistema de tickets
+│   │   └── health/             # Health check
+│   ├── page.tsx                # Página principal
+│   ├── layout.tsx              # Layout raiz
+│   └── globals.css             # Estilos globais
+├── components/                  # Componentes React
+│   ├── ui/                     # shadcn/ui components
+│   ├── AuthForms.tsx           # Formulários de autenticação
+│   ├── BriefingForm.tsx        # Formulário de briefing
+│   ├── BudgetForm.tsx          # Calculadora de orçamento
+│   ├── ClientDashboard.tsx     # Dashboard do cliente
+│   ├── MarketingTools.tsx      # Ferramentas de marketing
+│   ├── ModalLayout.tsx         # Layout de modais
+│   ├── Portfolio.tsx           # Portfólio de cases
+│   └── TicketForm.tsx          # Formulário de tickets
+├── hooks/                       # Custom hooks
+│   ├── use-analytics.ts        # Hook de analytics
+│   └── use-toast.ts           # Hook de notificações
+├── lib/                         # Utilitários
+│   ├── db.ts                   # Cliente Prisma
+│   ├── knowledge-base.ts       # Base de conhecimento RGA
+│   └── socket.ts              # Configuração Socket.io
+└── prisma/                      # Schema do banco
+    └── schema.prisma
 ```
 
-## 🎨 Available Features & Components
+## 🎨 Componentes UI Disponíveis
 
-This scaffold includes a comprehensive set of modern web development tools:
+### Layout
+- **ModalLayout** - Layout consistente para modais com header/footer
+- **Card** - Container para conteúdo
+- **Separator** - Divisores visuais
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Formulários
+- **Input** - Campos de texto
+- **Textarea** - Áreas de texto
+- **Select** - Seleção de opções
+- **Button** - Botões com vários estilos
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+### Feedback
+- **Alert** - Mensagens de alerta
+- **Toast** - Notificações temporárias
+- **Progress** - Indicadores de progresso
+- **Skeleton** - Loading states
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+### Navegação
+- **Tabs** - Abas para organização de conteúdo
+- **Navigation Menu** - Menus de navegação
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+### Dados
+- **Badge** - Tags e indicadores
+- **Avatar** - Imagens de perfil
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+## 🔧 Scripts Disponíveis
 
-## 🤝 Get Started with Z.ai
+```bash
+# Desenvolvimento
+npm run dev          # Iniciar servidor de desenvolvimento
+npm run build        # Build para produção
+npm run start        # Iniciar servidor de produção
+npm run lint         # Verificar linting
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+# Banco de Dados
+npm run db:push      # Push do schema para o banco
+npm run db:studio    # Abrir Prisma Studio
+npm run db:generate  # Gerar Prisma Client
+
+# Outros
+npm run type-check   # Verificação de tipos
+npm run format       # Formatar código
+```
+
+## 🚀 Deploy
+
+### Vercel (Recomendado)
+1. Conectar repositório GitHub à Vercel
+2. Configurar variáveis de ambiente
+3. Deploy automático em cada push
+
+### Outras Plataformas
+- **Netlify** - Configurar build command e output directory
+- **Railway** - Configurar serviço Node.js
+- **Digital Ocean** - Deploy com App Platform
+
+## 🔐 Segurança
+
+- Autenticação com bcryptjs
+- Validação de formulários no cliente e servidor
+- Proteção contra XSS e CSRF
+- Variáveis de ambiente sensíveis
+- CORS configurado
+
+## 📈 Monitoramento e Analytics
+
+- Tracking de eventos personalizados
+- Análise de conversões
+- Métricas de engajamento
+- Monitoramento de erros
+- Performance monitoring
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 📞 Contato
+
+**Gamb Marketing Digital**
+- 📍 Alvorada - RS
+- 📧 contato@gamb.com.br
+- 📱 (51) 9999-9999
+- 🌐 https://gamb.com.br
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Desenvolvido com ❤️ pela equipe Gamb. Transformando negócios através de estratégias digitais inovadoras.

@@ -15,9 +15,11 @@ import { BriefingForm } from "@/components/BriefingForm";
 import { MarketingTools } from "@/components/MarketingTools";
 import { AuthForms } from "@/components/AuthForms";
 import { ClientDashboard } from "@/components/ClientDashboard";
+import { ModalLayout } from "@/components/ModalLayout";
 import { useAnalytics } from "@/hooks/use-analytics";
 
 export default function Home() {
+  const analytics = useAnalytics();
   const [showPopup, setShowPopup] = useState(false);
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [showChat, setShowChat] = useState(false);
@@ -626,96 +628,44 @@ export default function Home() {
 
       {/* Modal de Orçamento */}
       {showBudgetForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold">Orçamento Inteligente</h2>
-                <Button 
-                  variant="ghost" 
-                  size="lg"
-                  onClick={() => setShowBudgetForm(false)}
-                >
-                  ×
-                </Button>
-              </div>
-              <BudgetForm onSubmit={handleBudgetSubmit} />
-            </div>
-          </div>
-        </div>
+        <ModalLayout title="Orçamento Inteligente" onClose={() => setShowBudgetForm(false)}>
+          <BudgetForm onSubmit={handleBudgetSubmit} />
+        </ModalLayout>
       )}
 
       {/* Modal de Portfólio */}
       {showPortfolio && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white w-full h-full max-h-full overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b z-10 p-4">
-              <div className="container mx-auto flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Portfólio de Cases</h2>
-                <Button 
-                  variant="ghost" 
-                  size="lg"
-                  onClick={() => setShowPortfolio(false)}
-                >
-                  ×
-                </Button>
-              </div>
-            </div>
-            <Portfolio />
-          </div>
-        </div>
+        <ModalLayout title="Portfólio de Cases" onClose={() => setShowPortfolio(false)}>
+          <Portfolio />
+        </ModalLayout>
       )}
 
       {/* Modal de Briefing */}
       {showBriefingForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold">Briefing Inteligente</h2>
-                <Button 
-                  variant="ghost" 
-                  size="lg"
-                  onClick={() => setShowBriefingForm(false)}
-                >
-                  ×
-                </Button>
-              </div>
-              <BriefingForm onBriefingGenerated={handleBriefingSubmit} />
-            </div>
-          </div>
-        </div>
+        <ModalLayout title="Briefing Inteligente" onClose={() => setShowBriefingForm(false)}>
+          <BriefingForm onBriefingGenerated={handleBriefingSubmit} />
+        </ModalLayout>
       )}
 
       {/* Modal de Ferramentas de Marketing */}
       {showMarketingTools && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white w-full h-full max-h-full overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b z-10 p-4">
-              <div className="container mx-auto flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Ferramentas de Marketing</h2>
-                <Button 
-                  variant="ghost" 
-                  size="lg"
-                  onClick={() => setShowMarketingTools(false)}
-                >
-                  ×
-                </Button>
-              </div>
-            </div>
-            <MarketingTools />
-          </div>
-        </div>
+        <ModalLayout title="Ferramentas de Marketing" onClose={() => setShowMarketingTools(false)}>
+          <MarketingTools />
+        </ModalLayout>
       )}
 
       {/* Modal de Login/Cadastro */}
       {showAuthForms && (
-        <AuthForms onAuthSuccess={handleAuthSuccess} />
+        <ModalLayout title="Área do Cliente" onClose={() => setShowAuthForms(false)} showFooter={false}>
+          <AuthForms onAuthSuccess={handleAuthSuccess} onClose={() => setShowAuthForms(false)} />
+        </ModalLayout>
       )}
 
       {/* Dashboard do Cliente */}
       {showClientDashboard && client && (
-        <ClientDashboard client={client} onLogout={handleLogout} />
+        <ModalLayout title="Área do Cliente" onClose={() => setShowClientDashboard(false)} showFooter={false}>
+          <ClientDashboard client={client} onLogout={handleLogout} />
+        </ModalLayout>
       )}
     </div>
   );
