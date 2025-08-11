@@ -15,6 +15,8 @@ import { BriefingForm } from "@/components/BriefingForm";
 import { MarketingTools } from "@/components/MarketingTools";
 import { AuthForms } from "@/components/AuthForms";
 import { ClientDashboard } from "@/components/ClientDashboard";
+import { AdminAuth } from "@/components/AdminAuth";
+import { AdminDashboard } from "@/components/AdminDashboard";
 import { ModalLayout } from "@/components/ModalLayout";
 import { useAnalytics } from "@/hooks/use-analytics";
 
@@ -29,7 +31,10 @@ export default function Home() {
   const [showMarketingTools, setShowMarketingTools] = useState(false);
   const [showAuthForms, setShowAuthForms] = useState(false);
   const [showClientDashboard, setShowClientDashboard] = useState(false);
+  const [showAdminAuth, setShowAdminAuth] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [client, setClient] = useState<any>(null);
+  const [admin, setAdmin] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'agent', knowledgeUsed?: boolean}[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [lastTicketId, setLastTicketId] = useState<string | null>(null);
@@ -56,6 +61,18 @@ export default function Home() {
     localStorage.removeItem('gamb_client');
   };
 
+  const handleAdminAuthSuccess = (adminUser: any) => {
+    setAdmin(adminUser);
+    setShowAdminAuth(false);
+    setShowAdminDashboard(true);
+  };
+
+  const handleAdminLogout = () => {
+    setAdmin(null);
+    setShowAdminDashboard(false);
+    localStorage.removeItem('gamb_admin');
+  };
+
   const handleTicketCreated = (ticketId: string) => {
     setLastTicketId(ticketId);
     analytics.trackTicketCreated(ticketId, 'chat');
@@ -69,6 +86,16 @@ export default function Home() {
         setClient(JSON.parse(savedClient));
       } catch (error) {
         localStorage.removeItem('gamb_client');
+      }
+    }
+
+    // Verificar se o administrador já está logado
+    const savedAdmin = localStorage.getItem('gamb_admin');
+    if (savedAdmin) {
+      try {
+        setAdmin(JSON.parse(savedAdmin));
+      } catch (error) {
+        localStorage.removeItem('gamb_admin');
       }
     }
 
@@ -622,6 +649,12 @@ export default function Home() {
           </div>
           <div className="border-t border-primary-foreground/20 pt-8 text-center text-primary-foreground/60">
             <p>&copy; 2024 Gamb Marketing Digital. Todos os direitos reservados.</p>
+            <button 
+              onClick={() => setShowAdminAuth(true)}
+              className="text-primary-foreground/60 hover:text-primary-foreground/80 text-sm mt-2"
+            >
+              Painel Administrativo
+            </button>
           </div>
         </div>
       </footer>
@@ -665,6 +698,18 @@ export default function Home() {
       {showClientDashboard && client && (
         <ModalLayout title="Área do Cliente" onClose={() => setShowClientDashboard(false)} showFooter={false}>
           <ClientDashboard client={client} onLogout={handleLogout} />
+        </ModalLayout>
+      )}
+
+      {/* Login Administrativo */}
+      {showAdminAuth && (
+        <AdminAuth onAuthSuccess={handleAdminAuthSuccess} onClose={() => setShowAdminAuth(false)} />
+      )}
+
+      {/* Dashboard Administrativo */}
+      {showAdminDashboard && admin && (
+        <ModalLayout title="Painel Administrativo" onClose={() => setShowAdminDashboard(false)} showFooter={false}>
+          <AdminDashboard admin={admin} onLogout={handleAdminLogout} />
         </ModalLayout>
       )}
     </div>
